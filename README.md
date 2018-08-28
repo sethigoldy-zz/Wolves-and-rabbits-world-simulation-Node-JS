@@ -10,7 +10,7 @@ To run the App :
  
  2). npm install
  
- 3) npm start
+ 3). npm start
 
 
 Let me know your comments/suggestions @ sethigoldy[at]gmail[dot]com
