@@ -7,7 +7,9 @@ Here's the screenshot :
 To run the App :
 
  1). cp .env.default .env
+ 
  2). npm install
+ 
  3) npm start
 
 
