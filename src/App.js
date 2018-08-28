@@ -11,14 +11,14 @@ class App extends Component {
             response: false,
             endpoint: "http://127.0.0.1:4001"
         };
+        this.createNotification=this.createNotification.bind(this);
     }
-    createNotification = (type,text,time) => {
+    createNotification(type,text,time){
           switch (type) {
             case 'info':
               NotificationManager.info(text,'',time);
               break;
             case 'success':
-                console.log('1');
               NotificationManager.success(text,'',time);
               break;
             case 'warning':
@@ -43,7 +43,7 @@ class App extends Component {
         }else if(val == 3){
             return <img src="/wolf.png" />;
         }else{
-            return ""
+            return "";
         }
     }
 
@@ -60,10 +60,9 @@ class App extends Component {
         const { response } = this.state;
         const { wolfs, carrots, rabbits,grid,notifications } = response;
         if(notifications){
-            console.log(notifications)
             this.getUniqueNotifications(notifications).map((msg)=>{
                 this.createNotification(msg.type,msg.text,msg.time);
-            })
+            });
         }
         return (
             <React.Fragment>
