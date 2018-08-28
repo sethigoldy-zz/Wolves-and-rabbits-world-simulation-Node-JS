@@ -1,6 +1,7 @@
 var rn = require('random-number');
 var space = require('./space');
 var carrots = 0;
+global.carrots=[];
 let minCarrot = 1; let maxCarrot = Math.ceil((process.env.TOTAL_SPACE)*3/10);
 var getRabbits = function(){
     return carrots;
@@ -42,25 +43,30 @@ let addCarrots = function(){
             position_y:posXY.Y,
             type:"carrots"
         });
+        global.notifications.push({
+            text:"New Carrot/s is added",
+            type:"success",
+            time:process.env.TIME*1000
+        });
         //growInPatch(posXY);
     }
 }
-let growInPatch=function(posXY){
-    let index = global.carrots.findIndex(x => x.id==wolf_id);
-    let obj = global.carrots[index];
-    //global.carrots.splice(index,1);
-    let initHealth = global.carrots[index].health;
-    if(initHealth == 50){
-        global.carrots[index].health=0;
-        //add one more wolf to the world
-        addWolf();
-    }
-}
+// let growInPatch=function(posXY){
+//     let index = global.carrots.findIndex(x => x.id==wolf_id);
+//     let obj = global.carrots[index];
+//     //global.carrots.splice(index,1);
+//     let initHealth = global.carrots[index].health;
+//     if(initHealth == 50){
+//         global.carrots[index].health=0;
+//         //add one more wolf to the world
+//         addCarrots();
+//     }
+// }
 
-setInterval(addCarrots,process.env.TIME*10);
+setInterval(addCarrots,process.env.TIME*10*1000);
 
 module.exports= {
     "getRabbits":getRabbits,
     "initCarrots":initCarrots,
-    "growInPatch":growInPatch
+    // "growInPatch":growInPatch
 }

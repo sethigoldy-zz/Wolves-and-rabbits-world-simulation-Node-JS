@@ -138,7 +138,7 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
         }
         
     }
-    console.log("sense",nearby);
+    // console.log("sense",nearby);
     if(nearby.length>0){
         nearby.sort(function(a,b){
             let aCord = Math.abs(a.posX-x-a.posY-y);let bCord =Math.abs(b.posX-x-b.posY-y);
@@ -149,9 +149,9 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
                 else
                     return 0
             });
-        console.log("nearby",nearby,"position",x,y)
+        // console.log("nearby",nearby,"position",x,y)
         for(var i in nearby){
-            console.log("food",nearby[i].type < currentEnvPos)
+            // console.log("food",nearby[i].type < currentEnvPos)
             if(nearby[i].type > currentEnvPos){   //danger move away from it
                 if(x - nearby[i].posX > 0){
                     X = x+1;
@@ -166,7 +166,7 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
                 //broadCastDangerMessage(type);
                 if(positionExists(X,Y))
                     return [X,Y];
-            }else if(nearby[i].type < currentEnvPos){   // yummy move towards the food
+            }else if(nearby[i].type+1 === currentEnvPos){   // yummy move towards the food
                 if(x - nearby[i].posX > 0){
                     X = x-1;
                 }else if(nearby[i].posX - x > 0){
@@ -177,23 +177,25 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
                 }else if(nearby[i].posY - y > 0){
                     Y = y+1;
                 }
-                console.log('nearby[i].posX',nearby[i].posX,'X',X,'nearby[i].posY',Y)
-                if(nearby[i].posX == X && nearby[i].posY == Y){
+                // console.log('nearby[i].posX',nearby[i].posX,'X',X,'nearby[i].posY',Y)
+                
+                //broadCastFoodMessage(type);
+                if(positionExists(X,Y)){
                     global.grid[X][Y]=currentEnvPos;
                     global.grid[x][y]=0;
-                    if(currentEnvPos == 2){
-                        let rabbit_id = obj.id;
-                        let carrotIndex = global.carrots.findIndex(r => r.posX==x && r.posY == y);
-                        rabbits.eatCarrot(rabbit_id,carrotIndex);
-                    }else if(currentEnvPos == 3){
-                        let wolf_id = obj.id;
-                        var rabbitIndex = findIndexByLocation(global.rabbits,X, Y);
-                        wolves.eatRabbit(wolf_id,rabbitIndex);
+                    if(nearby[i].posX == X && nearby[i].posY == Y){
+                        if(currentEnvPos == 2){
+                            let rabbit_id = obj.id;
+                            let carrotIndex = global.carrots.findIndex(r => r.posX==x && r.posY == y);
+                            rabbits.eatCarrot(rabbit_id,carrotIndex);
+                        }else if(currentEnvPos == 3){
+                            let wolf_id = obj.id;
+                            var rabbitIndex = findIndexByLocation(global.rabbits,X, Y);
+                            wolves.eatRabbit(wolf_id,rabbitIndex);
+                        }
                     }
-                }
-                //broadCastFoodMessage(type);
-                if(positionExists(X,Y))
                     return {"X":X,"Y":Y};
+                }
             }else{  // encounter brothers/sisters 
               //do nothing  
             }

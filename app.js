@@ -14,16 +14,18 @@ const common = require("./models/common");
 io.on("connection", socket => {
     console.log("New client connected"), setInterval(
         () => getApiAndEmit(socket),
-        10000
+        1000
     );
     socket.on("disconnect", () => console.log("Client disconnected"));
 });
 const getApiAndEmit = async socket => {
     try {
         socket.emit("FromAPI", {
-            "carrots": common.carrots(),
-            "rabbits": common.rabbits(),
-            "wolfs" : common.wolfs()
+            "carrots": global.carrots.length,
+            "rabbits": global.rabbits.length,
+            "wolfs" : global.wolves.length,
+            "grid" : global.grid,
+            "notifications": global.notifications         
         });
     } catch (error) {
         console.error(error);

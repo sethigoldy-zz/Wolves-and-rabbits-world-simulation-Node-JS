@@ -5,6 +5,7 @@ var wolfs = 0
 var getWolfs = function(){
     return wolfs;
 };
+global.wolves=[];
 let initWolves=function(){
     for(let i=1;i<=process.env.INIT_WOLVES;i++)
     {
@@ -41,14 +42,23 @@ let eatRabbit = function(wolf_id,rabbitIndex){
     if(initHealth == 50){
         global.wolves[index].health=0;
         //add one more wolf to the world
-        console.log("add one more wolf to the world")
+        console.log("added one more wolf to the world");
+        global.notifications.push({
+            text:"New Wolf is added",
+            type:"warning",
+            time:process.env.TIME*1000
+        });
         addWolf();
     }else{
         global.wolves[index].health=initHealth+50; 
     }
     //lets kill that rabbit
     global.rabbits.splice(rabbitIndex,1);
-    
+    global.notifications.push({
+        text:"A rabbit is killed",
+        type:"danger",
+        time:process.env.TIME*1000
+    });
 }
 
 module.exports= {
