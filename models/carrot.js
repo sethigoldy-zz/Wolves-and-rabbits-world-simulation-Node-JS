@@ -31,7 +31,7 @@ let addCarrots = function(){
     }
     let posXY = space.getPositionXY('carrots',x,y);
     if(posXY){
-        if(addedCarrots >= maxNCarrot){
+        if(addedCarrots >= maxCarrot){
             x=undefined;
             y=undefined;
             addedCarrot=0;
@@ -57,7 +57,7 @@ let growInPatch=function(posXY){
     }
 }
 
-setInterval(addCarrots(),process.env.TIME*10);
+setInterval(addCarrots,process.env.TIME*10);
 
 module.exports= {
     "getRabbits":getRabbits,

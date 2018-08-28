@@ -1,4 +1,4 @@
-var space = require('./space');
+
 var rabbits = 0;
 
 var getRabbits = function(){
@@ -22,8 +22,8 @@ let addRabbit = function(){
         global.rabbits = [];
         counter = 1;
     }
-    let posXY = space.getPositionXY("rabbits");
-    console.log('rabbit addRabbit posXY',posXY)
+    var getPositionXY = require('./space').getPositionXY;
+    let posXY = getPositionXY("rabbits");
     if(posXY){
 
         global.rabbits.push({

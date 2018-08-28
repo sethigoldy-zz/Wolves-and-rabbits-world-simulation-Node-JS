@@ -1,4 +1,3 @@
-var space = require('./space');
 var wolfs = 0
 // setInterval(function(){
 //     wolfs+=1;
@@ -24,7 +23,8 @@ let addWolf=function(){
         global.wolves = [];
         counter = 1;
     }
-    let posXY = space.getPositionXY("wolves");
+    var getPositionXY = require('./space').getPositionXY;
+    let posXY = getPositionXY("wolves");
     if(posXY){
         global.wolves.push({
             id:counter,
@@ -41,12 +41,14 @@ let eatRabbit = function(wolf_id,rabbitIndex){
     if(initHealth == 50){
         global.wolves[index].health=0;
         //add one more wolf to the world
+        console.log("add one more wolf to the world")
         addWolf();
     }else{
         global.wolves[index].health=initHealth+50; 
     }
     //lets kill that rabbit
     global.rabbits.splice(rabbitIndex,1);
+    
 }
 
 module.exports= {
