@@ -1,16 +1,24 @@
+var rn = require('random-number');
 var space = require('./space');
 var carrots = 0;
-
+let minCarrot = 1; let maxCarrot = Math.ceil((process.env.TOTAL_SPACE)*3/10);
 var getRabbits = function(){
     return carrots;
 };
+let x,y,addedCarrots = 0;
+let moves=[+1,0,-1];
+var move_options = {
+    min:  0,
+    max:  2,
+    integer: true
+}
 let initCarrots=function(){
     for(carrots=1;carrots<=process.env.INIT_CARROTS;carrots++)
     {
         addCarrots();
     }
 }
-let addCarrots=function(){
+let addCarrots = function(){
     let counter=0;
     if(global.carrots){
         let last_el=global.carrots.slice(-1).pop();
@@ -21,17 +29,20 @@ let addCarrots=function(){
         global.carrots = [];
         counter = 1;
     }
-    let posXY = space.getCarrotPositionXY('carrots');
-    console.log('rabbit addCarrots posXY',posXY)
+    let posXY = space.getPositionXY('carrots',x,y);
     if(posXY){
+        if(addedCarrots >= maxNCarrot){
+            x=undefined;
+            y=undefined;
+            addedCarrot=0;
+        }
         global.carrots.push({
             id:counter,
             position_x:posXY.X,
             position_y:posXY.Y,
-            type:"carrots",
-            health:0
+            type:"carrots"
         });
-        growInPatch(posXY);
+        //growInPatch(posXY);
     }
 }
 let growInPatch=function(posXY){
@@ -50,5 +61,6 @@ setInterval(addCarrots(),process.env.TIME*10);
 
 module.exports= {
     "getRabbits":getRabbits,
-    "initCarrots":initCarrots
+    "initCarrots":initCarrots,
+    "growInPatch":growInPatch
 }

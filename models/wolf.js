@@ -35,19 +35,22 @@ let addWolf=function(){
         });
     }
 }
-let eatRabbit=function(wolf_id){
+let eatRabbit = function(wolf_id,rabbitIndex){
     let index = global.wolves.findIndex(x => x.id==wolf_id);
-    let obj = global.wolves[index];
-    //global.wolves.splice(index,1);
     let initHealth = global.wolves[index].health;
     if(initHealth == 50){
         global.wolves[index].health=0;
         //add one more wolf to the world
         addWolf();
+    }else{
+        global.wolves[index].health=initHealth+50; 
     }
+    //lets kill that rabbit
+    global.rabbits.splice(rabbitIndex,1);
 }
 
 module.exports= {
     "getWolves":getWolfs,
-    "initWolves":initWolves
+    "initWolves":initWolves,
+    "eatRabbit":eatRabbit
 }

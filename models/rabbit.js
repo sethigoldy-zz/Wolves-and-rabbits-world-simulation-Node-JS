@@ -11,7 +11,7 @@ let initRabbits=function(){
         rabbits++;
     }
 }
-let addRabbit=function(){
+let addRabbit = function(){
     let counter=0;
     if(global.rabbits){
         let last_el=global.rabbits.slice(-1).pop();
@@ -35,19 +35,23 @@ let addRabbit=function(){
         });
     }
 }
-let eatRabbit=function(wolf_id){
-    let index = global.rabbits.findIndex(x => x.id==wolf_id);
+let eatCarrot = function(rabbit_id,carrotIndex){
+    let index = global.rabbits.findIndex(x => x.id==rabbit_id);
     let obj = global.rabbits[index];
-    //global.rabbits.splice(index,1);
     let initHealth = global.rabbits[index].health;
-    if(initHealth == 50){
+    if(initHealth == 75){
         global.rabbits[index].health=0;
-        //add one more wolf to the world
-        addWolf();
+        //add one more rabbit to the world
+        addRabbit();
+    }else{
+        global.rabbits[index].health=initHealth+25;
     }
+    //lets remove the existence of the carrot
+    global.carrots.splice(carrotIndex,1);
 }
 
 module.exports= {
     "getRabbits":getRabbits,
-    "initRabbits":initRabbits
+    "initRabbits":initRabbits,
+    "eatCarrot":eatCarrot
 }
