@@ -1,7 +1,4 @@
-var wolfs = 0
-// setInterval(function(){
-//     wolfs+=1;
-// },100)
+var wolfs = 0;
 var getWolfs = function(){
     return wolfs;
 };
@@ -12,7 +9,7 @@ let initWolves=function(){
         addWolf();
         wolfs++;
     }
-}
+};
 let addWolf=function(){
     let counter=0;
     if(global.wolves){
@@ -32,14 +29,15 @@ let addWolf=function(){
             position_x:posXY.X,
             position_y:posXY.Y,
             type:"wolves",
-            health:0
+            health:0,
+            nearFood:0
         });
     }
-}
+};
 let eatRabbit = function(wolf_id,rabbitIndex){
     let index = global.wolves.findIndex(x => x.id==wolf_id);
     let initHealth = global.wolves[index].health;
-    if(initHealth == 50){
+    if(initHealth == 75){
         global.wolves[index].health=0;
         //add one more wolf to the world
         console.log("added one more wolf to the world");
@@ -50,7 +48,7 @@ let eatRabbit = function(wolf_id,rabbitIndex){
         });
         addWolf();
     }else{
-        global.wolves[index].health=initHealth+50; 
+        global.wolves[index].health=initHealth+25; 
     }
     //lets kill that rabbit
     global.rabbits.splice(rabbitIndex,1);
@@ -59,10 +57,29 @@ let eatRabbit = function(wolf_id,rabbitIndex){
         type:"danger",
         time:process.env.TIME*1000
     });
-}
+};
+
+var foodNear = function(action,x,y){
+    global.wolves.forEach((element, index) => {
+        if(x+4< element.position_x <x-4 
+            && y+4 < element.position_y < y-4
+            && (x!=element.position_x && y!=element.position_y)) {
+            if(action == "food")
+                global.wolves[index].nearFood = 1;
+            else if(action == "wolves")
+                global.wolves[index].nearDanger = 1;
+        }
+    });
+};
+
+var resetToDefaults = function(index){
+    global.wolves[index].nearFood=0;
+};
 
 module.exports= {
     "getWolves":getWolfs,
     "initWolves":initWolves,
-    "eatRabbit":eatRabbit
-}
+    "eatRabbit":eatRabbit,
+    "foodNear":foodNear,
+    "resetToDefaults":resetToDefaults
+};

@@ -8,7 +8,7 @@ var move_options = {
     min:  0,
     max:  2,
     integer: true
-}
+};
 var initSpace = function(space){
     global.grid = [];
     for(var x = 0; x < space; x++){
@@ -34,7 +34,7 @@ let getPositionXY = function(type,x,y,obj){
             min:0,
             max:global.grid[0].length-1,
             integer:true
-        }
+        };
     }else{
         //let's check for nearby food and predators
         let check = checkNearbyFoodAndPredator(type,x,y,obj);
@@ -81,7 +81,7 @@ let getPositionXY = function(type,x,y,obj){
         return {
             "X":X,
             "Y":Y
-        }
+        };
     }
     // console.log("not moved");
 
@@ -89,14 +89,14 @@ let getPositionXY = function(type,x,y,obj){
         return {
             "X":x,
             "Y":y
-        }
+        };
     }else{
         if(typeof(x) === "undefined" || typeof(y) === "undefined"){
             return getPositionXY(type);
         }
         //the world is busy
     }
-}
+};
 
 //determine status in environment (the higher the dangerous)
 let  determineEnvironmentPosition = function(type){
@@ -109,7 +109,7 @@ let  determineEnvironmentPosition = function(type){
             pos = 1;
         }
         return pos;
-}
+};
 
 // To check nearby predator
 // both rabbits and wolves sense each other upto 2 point radius
@@ -120,9 +120,14 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
     if(currentEnvPos == 1){
         return [];
     }
-    for(let i=x-2;i<x+2;i++){
+    let check_pos = 2;
+    if((typeof(obj.inDanger) !=="undefined"  && obj.inDanger == 1) || 
+    (typeof(obj.nearFood) !== "undefined" && obj.nearFood == 1)){
+        check_pos = 4;
+    }
+    for(let i=x-check_pos;i<x+check_pos;i++){
         if(i>=0 && typeof(global.grid[i])!=="undefined"){
-            for(let j=y-2;j<y+2;j++){
+            for(let j=y-check_pos;j<y+check_pos;j++){
                 if(j>=0 && typeof(global.grid[i][j])!=="undefined"){
                     if(parseInt(global.grid[i][j]) != 0 
                     && parseInt(global.grid[i][j]) != currentEnvPos){
@@ -133,25 +138,28 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
                         });
                     } 
                 }
-                   
             }
-        }
-        
+        }  
     }
-    // console.log("sense",nearby);
+    
     if(nearby.length>0){
-        nearby.sort(function(a,b){
-            let aCord = Math.abs(a.posX-x-a.posY-y);let bCord =Math.abs(b.posX-x-b.posY-y);
+        nearby.sort(function(a,b){  // sort for nearest first 
+            let aCord = Math.abs(a.posX-x-a.posY-y);let bCord = Math.abs(b.posX-x-b.posY-y);
                 if(aCord<bCord)
                     return -1;
                 else if(bCord<aCord)
-                    return 1
+                    return 1;
                 else
-                    return 0
+                    return 0;
+            }).sort(function(a,b){ //again sort for first danger then food 
+                if(a.type<b.type)
+                    return -1;
+                else if(b.type<a.type)
+                    return 1;
+                else
+                    return 0;
             });
-        // console.log("nearby",nearby,"position",x,y)
         for(var i in nearby){
-            // console.log("food",nearby[i].type < currentEnvPos)
             if(nearby[i].type > currentEnvPos){   //danger move away from it
                 if(x - nearby[i].posX > 0){
                     X = x+1;
@@ -163,8 +171,9 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
                 }else if(nearby[i].posY - y > 0){
                     Y = y-1;
                 }
-                //broadCastDangerMessage(type);
-                if(positionExists(X,Y))
+                //broadCast danger message
+                rabbits.inDanger(x,y);
+                if(positionExists(X,Y) && canPositionOverride(currentEnvPos,X,Y))
                     return [X,Y];
             }else if(nearby[i].type+1 === currentEnvPos){   // yummy move towards the food
                 if(x - nearby[i].posX > 0){
@@ -177,16 +186,19 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
                 }else if(nearby[i].posY - y > 0){
                     Y = y+1;
                 }
-                // console.log('nearby[i].posX',nearby[i].posX,'X',X,'nearby[i].posY',Y)
-                
-                //broadCastFoodMessage(type);
-                if(positionExists(X,Y)){
+                // broadcast the message for food
+                if(currentEnvPos == 2){
+                    rabbits.foodNear(X,Y);
+                }else{
+                    wolves.foodNear(X,Y);
+                }
+                if(positionExists(X,Y) && canPositionOverride(currentEnvPos,X,Y)){
                     global.grid[X][Y]=currentEnvPos;
                     global.grid[x][y]=0;
                     if(nearby[i].posX == X && nearby[i].posY == Y){
                         if(currentEnvPos == 2){
                             let rabbit_id = obj.id;
-                            let carrotIndex = global.carrots.findIndex(r => r.posX==x && r.posY == y);
+                            let carrotIndex = global.carrots.findIndex(r => r.position_x==X && r.position_y == Y);
                             rabbits.eatCarrot(rabbit_id,carrotIndex);
                         }else if(currentEnvPos == 3){
                             let wolf_id = obj.id;
@@ -202,21 +214,16 @@ let checkNearbyFoodAndPredator = function(type,x,y,obj){
         }
     }
     return [];
-}
+};
 
 var positionExists = function(x,y){
-    return typeof(global.grid[x]) !== "undefined" && typeof(global.grid[x][y]) !== 'undefined'
+    return typeof(global.grid[x]) !== "undefined" && typeof(global.grid[x][y]) !== 'undefined';
+};
+
+var canPositionOverride = function(current_type,x,y){
+    return current_type > global.grid[x][y]; 
 }
 
-// Broadcast information for food
-let broadCastFoodMessage = function(type){
-
-}
-
-// Broadcast information for danger
-let broadCastDangerMessage = function(type){
-
-}
 var findIndexByLocation = function(array, x, y) {
     for (var i = 0; i < array.length; i++) {
         if (array[i].position_x === x && array[i].position_y===y) {
@@ -224,8 +231,19 @@ var findIndexByLocation = function(array, x, y) {
         }
     }
     return null;
-}
+};
+
+let isSpaceAvailable = function(){
+    for(let i =0 ;i<global.grid[0];i++){
+        if(global.grid[i].filter(point => point > 0).length){
+            return true;
+        }
+    }
+    return false;
+};
+
 module.exports = {
     "initSpace":initSpace,
-    "getPositionXY":getPositionXY
-}
+    "getPositionXY":getPositionXY,
+    "isSpaceAvailable":isSpaceAvailable
+};

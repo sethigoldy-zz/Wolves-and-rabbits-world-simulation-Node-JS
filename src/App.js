@@ -24,7 +24,7 @@ class App extends Component {
             case 'warning':
               NotificationManager.warning(text,'', time);
               break;
-            case 'error':
+            case 'danger':
               NotificationManager.error(text, '', time);
               break;
           }
@@ -67,7 +67,7 @@ class App extends Component {
         return (
             <React.Fragment>
                 <div className="grid-container">
-                <div className="grid-item">Total Wolfs:{wolfs}</div>
+                <div className="grid-item">Total Wolves:{wolfs}</div>
                 <div className="grid-item">Total carrots:{carrots}</div>
                 <div className="grid-item">Total rabbits:{rabbits}</div>
                 </div>
@@ -76,11 +76,11 @@ class App extends Component {
                         <div className="content">
                         {
                             grid.map(
-                                arr=> <tr>
-                                 {arr.map((val,i) => <td key={i}>{this.getVal(val)}</td>)}
-                              </tr> 
-                               )
-                            
+                                (arr,j)=> 
+                                <tr key={j}>
+                                    {arr.map((val,i) => <td key={i}>{this.getVal(val)}</td>)}
+                                </tr> 
+                            )                            
                         }
                         </div>
                     : <p>Loading...</p>}

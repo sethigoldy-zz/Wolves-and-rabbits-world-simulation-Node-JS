@@ -36,18 +36,14 @@ th {
   color: white;
 }
 .content {
-  width: 300px;
+  width: 800px;
   height: 600px;
 
-  position:absolute; /*it can be fixed too*/
   left:0; right:0;
   top:200px; bottom:0;
   margin:auto;
-
-  /*this to solve "the content will not be cut when the window is smaller than the content": */
   max-width:100%;
   max-height:100%;
-  overflow:auto;
 }
 
 .grid-container {

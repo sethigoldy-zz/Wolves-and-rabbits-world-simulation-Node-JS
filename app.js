@@ -21,12 +21,24 @@ io.on("connection", socket => {
 const getApiAndEmit = async socket => {
     try {
         socket.emit("FromAPI", {
-            "carrots": global.carrots.length,
+            "carrots": (function(){
+                let total_number = 0;
+                if(global.grid){
+                    for(let i =0;i<global.grid[0].length;i++)
+                {
+                    let grid_carrots = global.grid[i].filter(point=>point == 1)
+                    if(grid_carrots)
+                    total_number += grid_carrots.length;
+                }
+                }
+                return total_number;            
+            })(),
             "rabbits": global.rabbits.length,
             "wolfs" : global.wolves.length,
             "grid" : global.grid,
             "notifications": global.notifications         
         });
+        global.notifications=[];
     } catch (error) {
         console.error(error);
     }
